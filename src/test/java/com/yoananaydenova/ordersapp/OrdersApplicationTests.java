@@ -1,10 +1,10 @@
-package com.yoananaydenova.orders_backend;
+package com.yoananaydenova.ordersapp;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class OrdersBackendApplicationTests {
+class OrdersApplicationTests {
 
 	@Test
 	void contextLoads() {

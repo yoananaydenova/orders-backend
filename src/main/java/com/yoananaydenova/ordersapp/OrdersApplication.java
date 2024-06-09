@@ -1,13 +1,13 @@
-package com.yoananaydenova.orders_backend;
+package com.yoananaydenova.ordersapp;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class OrdersBackendApplication {
+public class OrdersApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(OrdersBackendApplication.class, args);
+		SpringApplication.run(OrdersApplication.class, args);
 	}
 
 }
