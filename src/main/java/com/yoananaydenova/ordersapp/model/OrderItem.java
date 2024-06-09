@@ -2,6 +2,7 @@ package com.yoananaydenova.ordersapp.model;
 
 import jakarta.persistence.*;
 
+@Entity
 public class OrderItem {
 
     @Id
@@ -18,7 +19,7 @@ public class OrderItem {
     private  Item product;
 
     @ManyToOne
-    @JoinColumn(name = "id")
+    @JoinColumn(name = "orderId")
     private  Order order;
 
     public Long getId() {
