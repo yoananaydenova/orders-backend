@@ -13,10 +13,19 @@ public class Item {
     private String name;
 
     @Column
-    private double availableQuantity;
+    private int availableQuantity;
 
     @Column
     private double currentPrice;
+
+    public Item() {
+    }
+
+    public Item(String name, int availableQuantity, double currentPrice) {
+        this.name = name;
+        this.availableQuantity = availableQuantity;
+        this.currentPrice = currentPrice;
+    }
 
     public Long getItemId() {
         return itemId;
@@ -34,11 +43,11 @@ public class Item {
         this.name = name;
     }
 
-    public double getAvailableQuantity() {
+    public int getAvailableQuantity() {
         return availableQuantity;
     }
 
-    public void setAvailableQuantity(double availableQuantity) {
+    public void setAvailableQuantity(int availableQuantity) {
         this.availableQuantity = availableQuantity;
     }
 

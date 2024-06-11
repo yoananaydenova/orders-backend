@@ -2,25 +2,38 @@ package com.yoananaydenova.ordersapp.model;
 
 import jakarta.persistence.*;
 
+import java.util.List;
+
 @Entity
+@Table(name = "order_items")
 public class OrderItem {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     @Column
-    private  double price;
+    private double price;
 
     @Column
     private int quantity;
 
     @OneToOne
-    private  Item product;
+    private Item item;
 
     @ManyToOne
     @JoinColumn(name = "orderId")
-    private  Order order;
+    private Order order;
+
+    public OrderItem() {
+    }
+
+    public OrderItem(double price, int quantity, Item item, Order order) {
+        this.price = price;
+        this.quantity = quantity;
+        this.item = item;
+        this.order = order;
+    }
 
     public Long getId() {
         return id;
@@ -46,12 +59,12 @@ public class OrderItem {
         this.quantity = quantity;
     }
 
-    public Item getProduct() {
-        return product;
+    public Item getItem() {
+        return item;
     }
 
-    public void setProduct(Item product) {
-        this.product = product;
+    public void setItem(Item item) {
+        this.item = item;
     }
 
     public Order getOrder() {
@@ -61,4 +74,6 @@ public class OrderItem {
     public void setOrder(Order order) {
         this.order = order;
     }
+
+
 }
