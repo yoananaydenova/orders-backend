@@ -9,7 +9,8 @@ import java.util.List;
 public interface ItemService {
 
     Item createItem(AddItemDTO addItemDTO);
-    Item getItem(OrderItemDTO dto);
 
     List<Item> getAllItems();
+
+    Item findById(Long id);
 }

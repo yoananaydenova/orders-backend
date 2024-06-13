@@ -28,4 +28,9 @@ public class ItemController {
     public List<Item> getAllOrders(){
         return itemService.getAllItems();
     }
+
+    @GetMapping("/item/{id}")
+    public Item getSingleItemById(@PathVariable Long id){
+       return itemService.findById(id);
+    }
 }

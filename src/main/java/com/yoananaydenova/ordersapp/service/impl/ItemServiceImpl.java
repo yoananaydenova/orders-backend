@@ -1,5 +1,6 @@
 package com.yoananaydenova.ordersapp.service.impl;
 
+import com.yoananaydenova.ordersapp.exception.ItemNotFoundException;
 import com.yoananaydenova.ordersapp.model.Item;
 import com.yoananaydenova.ordersapp.model.dtos.AddItemDTO;
 import com.yoananaydenova.ordersapp.model.dtos.OrderItemDTO;
@@ -25,16 +26,12 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public Item getItem(OrderItemDTO dto) {
-        return itemRepository.findById(dto.itemId())
-                .orElseThrow(() -> new NoSuchElementException(
-                        """
-                                The item "%s" does not exist!""".formatted(dto.itemName())));
-
+    public List<Item> getAllItems() {
+        return itemRepository.findAll();
     }
 
     @Override
-    public List<Item> getAllItems() {
-        return itemRepository.findAll();
+    public Item findById(Long id) {
+        return itemRepository.findById(id).orElseThrow(() -> new ItemNotFoundException(id));
     }
 }

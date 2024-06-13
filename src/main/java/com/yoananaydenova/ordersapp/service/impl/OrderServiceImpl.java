@@ -11,6 +11,7 @@ import com.yoananaydenova.ordersapp.repository.OrderItemRepository;
 import com.yoananaydenova.ordersapp.service.ItemService;
 import com.yoananaydenova.ordersapp.service.OrderService;
 import com.yoananaydenova.ordersapp.exception.ItemQuantityException;
+import com.yoananaydenova.ordersapp.exception.OrderNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -78,14 +79,12 @@ public class OrderServiceImpl implements OrderService {
 
     private Order getOrder(long orderId) {
         return orderRepository.findById(orderId)
-                .orElseThrow(() -> new NoSuchElementException(
-                        """
-                                The order with id: "%s" does not exist!""".formatted(orderId)));
+                .orElseThrow(() -> new OrderNotFoundException(orderId) );
     }
 
     @Transactional
     private OrderItem createOrderItem(Order order, OrderItemDTO orderItemDTO) {
-        final Item item = itemService.getItem(orderItemDTO);
+        final Item item = itemService.findById(orderItemDTO.itemId());
 
         final int availableQuantity = item.getAvailableQuantity();
         final int orderItemQuantity = orderItemDTO.quantity();
@@ -104,8 +103,7 @@ public class OrderServiceImpl implements OrderService {
         if (availableQuantity >= orderItemQuantity) {
             return;
         }
-        throw new ItemQuantityException("""
-                The item %s has available quantity %s and is less than ordered item quantity %s!""".formatted(itemName, availableQuantity, orderItemQuantity));
+        throw new ItemQuantityException(itemName, availableQuantity, orderItemQuantity);
 
     }
 
