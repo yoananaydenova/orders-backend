@@ -33,4 +33,9 @@ public class ItemController {
     public Item getSingleItemById(@PathVariable Long id){
        return itemService.findById(id);
     }
+
+    @PutMapping("/item/{id}")
+    public Item updateItem(@PathVariable Long id, @RequestBody AddItemDTO addItemDTO){
+       return itemService.updateItemById(id, addItemDTO);
+    }
 }

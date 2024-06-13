@@ -13,4 +13,6 @@ public interface ItemService {
     List<Item> getAllItems();
 
     Item findById(Long id);
+
+    Item updateItemById(Long id, AddItemDTO addItemDTO);
 }
