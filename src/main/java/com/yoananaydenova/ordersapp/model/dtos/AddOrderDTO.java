@@ -8,8 +8,7 @@ import java.util.Set;
 
 public record AddOrderDTO(
         Long orderId,
-        Set<OrderItemDTO> items,
-        List<String> failedAddedItems
+        Set<OrderItemDTO> items
 ) {
 
 }
