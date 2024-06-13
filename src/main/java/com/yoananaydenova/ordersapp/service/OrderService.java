@@ -1,14 +1,15 @@
 package com.yoananaydenova.ordersapp.service;
 
-import com.yoananaydenova.ordersapp.model.Order;
+
 import com.yoananaydenova.ordersapp.model.dtos.AddOrderDTO;
+import com.yoananaydenova.ordersapp.model.dtos.OrderDTO;
 
 import java.util.List;
 
 
 public interface OrderService {
 
-    AddOrderDTO createOrder(AddOrderDTO addOrderDTO);
+    OrderDTO createOrder(AddOrderDTO addOrderDTO);
 
-    List<Order> getAllOrders();
+    List<OrderDTO> getAllOrders();
 }

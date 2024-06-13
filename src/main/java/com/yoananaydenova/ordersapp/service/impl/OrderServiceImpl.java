@@ -4,6 +4,7 @@ import com.yoananaydenova.ordersapp.model.Item;
 import com.yoananaydenova.ordersapp.model.Order;
 import com.yoananaydenova.ordersapp.model.OrderItem;
 import com.yoananaydenova.ordersapp.model.dtos.AddOrderDTO;
+import com.yoananaydenova.ordersapp.model.dtos.OrderDTO;
 import com.yoananaydenova.ordersapp.model.dtos.OrderItemDTO;
 import com.yoananaydenova.ordersapp.repository.OrderRepository;
 import com.yoananaydenova.ordersapp.repository.OrderItemRepository;
@@ -31,7 +32,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public AddOrderDTO createOrder(AddOrderDTO addOrderDTO) {
+    public OrderDTO createOrder(AddOrderDTO addOrderDTO) {
 
         final Order newOrder = orderRepository.save(new Order());
 
@@ -50,20 +51,28 @@ public class OrderServiceImpl implements OrderService {
 
         newOrder.setItems(new HashSet<>(savedOrderItems));
 
-        final Set<OrderItemDTO> resultItems = convertOrderItemIntoDTO(savedOrderItems);
+        orderRepository.save(newOrder);
 
-        return new AddOrderDTO(newOrder.getOrderId(), resultItems, filedAddedItems);
+        final List<OrderItemDTO> resultItems = convertOrderItemIntoDTO(savedOrderItems);
+
+        return new OrderDTO(newOrder.getOrderId(), newOrder.getCreatedOn(), null, newOrder.getTotalAmount(), resultItems, filedAddedItems);
     }
 
-    private static Set<OrderItemDTO> convertOrderItemIntoDTO(List<OrderItem> savedOrderItems) {
+    private static List<OrderItemDTO> convertOrderItemIntoDTO(List<OrderItem> savedOrderItems) {
         return savedOrderItems.stream()
                 .map(i -> new OrderItemDTO(i.getId(), i.getItem().getName(), i.getQuantity()))
-                .collect(Collectors.toSet());
+                .collect(Collectors.toList());
     }
 
     @Override
-    public List<Order> getAllOrders() {
-        return orderRepository.findAll();
+    public List<OrderDTO> getAllOrders() {
+        return orderRepository.findAll().stream()
+                .map(order-> new OrderDTO(order.getOrderId(),
+                        order.getCreatedOn(), order.getUpdatedOn(), order.getTotalAmount(), createOrderItemDTOs(order.getItems()), new ArrayList<>())).collect(Collectors.toList());
+    }
+
+    private List<OrderItemDTO> createOrderItemDTOs(Set<OrderItem> orderItems) {
+        return orderItems.stream().map(i-> new OrderItemDTO(i.getId(),i.getItem().getName(), i.getQuantity())).collect(Collectors.toList());
     }
 
 

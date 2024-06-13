@@ -2,17 +2,16 @@ package com.yoananaydenova.ordersapp.controller;
 
 import com.yoananaydenova.ordersapp.model.Order;
 import com.yoananaydenova.ordersapp.model.dtos.AddOrderDTO;
+import com.yoananaydenova.ordersapp.model.dtos.OrderDTO;
 import com.yoananaydenova.ordersapp.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Set;
+
 
 @RestController
+@CrossOrigin("http://localhost:5173")
 public class OrderController {
 
     private final OrderService orderService;
@@ -24,12 +23,12 @@ public class OrderController {
     }
 
     @PostMapping("/order")
-    public AddOrderDTO createOrder(@RequestBody AddOrderDTO addOrderDTO){
+    public OrderDTO createOrder(@RequestBody AddOrderDTO addOrderDTO){
         return orderService.createOrder(addOrderDTO);
     }
 
     @GetMapping("/orders")
-    public List<Order> getAllOrders(){
+    public List<OrderDTO> getAllOrders(){
         return orderService.getAllOrders();
     }
 }
