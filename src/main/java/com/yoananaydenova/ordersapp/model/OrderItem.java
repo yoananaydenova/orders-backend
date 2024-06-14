@@ -2,15 +2,19 @@ package com.yoananaydenova.ordersapp.model;
 
 import jakarta.persistence.*;
 
-import java.util.List;
-
 @Entity
 @Table(name = "order_items")
 public class OrderItem {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column
+    private Long itemId;
+
+    @Column
+    private String itemName;
 
     @Column
     private double price;
@@ -18,8 +22,6 @@ public class OrderItem {
     @Column
     private int quantity;
 
-    @OneToOne
-    private Item item;
 
     @ManyToOne
     @JoinColumn(name = "orderId")
@@ -28,10 +30,11 @@ public class OrderItem {
     public OrderItem() {
     }
 
-    public OrderItem(double price, int quantity, Item item, Order order) {
+    public OrderItem(Long itemId, double price, int quantity, String itemName, Order order) {
+        this.itemId = itemId;
         this.price = price;
         this.quantity = quantity;
-        this.item = item;
+        this.itemName = itemName;
         this.order = order;
     }
 
@@ -59,12 +62,12 @@ public class OrderItem {
         this.quantity = quantity;
     }
 
-    public Item getItem() {
-        return item;
+    public String getItemName() {
+        return itemName;
     }
 
-    public void setItem(Item item) {
-        this.item = item;
+    public void setItemName(String itemName) {
+        this.itemName = itemName;
     }
 
     public Order getOrder() {
@@ -75,5 +78,11 @@ public class OrderItem {
         this.order = order;
     }
 
+    public Long getItemId() {
+        return itemId;
+    }
 
+    public void setItemId(Long itemId) {
+        this.itemId = itemId;
+    }
 }

@@ -61,7 +61,7 @@ public class OrderServiceImpl implements OrderService {
 
     private static List<OrderItemDTO> convertOrderItemIntoDTO(List<OrderItem> savedOrderItems) {
         return savedOrderItems.stream()
-                .map(i -> new OrderItemDTO(i.getId(), i.getItem().getName(), i.getQuantity()))
+                .map(i -> new OrderItemDTO(i.getItemId(), i.getItemName(), i.getQuantity()))
                 .collect(Collectors.toList());
     }
 
@@ -73,7 +73,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     private List<OrderItemDTO> createOrderItemDTOs(Set<OrderItem> orderItems) {
-        return orderItems.stream().map(i-> new OrderItemDTO(i.getId(),i.getItem().getName(), i.getQuantity())).collect(Collectors.toList());
+        return orderItems.stream().map(i-> new OrderItemDTO(i.getId(),i.getItemName(), i.getQuantity())).collect(Collectors.toList());
     }
 
 
@@ -92,7 +92,8 @@ public class OrderServiceImpl implements OrderService {
         validateQuantity(orderItemDTO.itemName(), availableQuantity, orderItemQuantity);
 
         item.setAvailableQuantity(calculateAvailableQuantity(availableQuantity, orderItemQuantity));
-        return new OrderItem(item.getCurrentPrice(), orderItemQuantity, item, order);
+
+        return new OrderItem(item.getItemId(), item.getCurrentPrice(), orderItemQuantity,item.getName(),  order);
     }
 
     private static int calculateAvailableQuantity(int availableQuantity, int orderItemQuantity) {

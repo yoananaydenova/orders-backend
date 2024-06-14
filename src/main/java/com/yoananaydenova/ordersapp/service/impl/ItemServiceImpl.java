@@ -3,13 +3,11 @@ package com.yoananaydenova.ordersapp.service.impl;
 import com.yoananaydenova.ordersapp.exception.ItemNotFoundException;
 import com.yoananaydenova.ordersapp.model.Item;
 import com.yoananaydenova.ordersapp.model.dtos.AddItemDTO;
-import com.yoananaydenova.ordersapp.model.dtos.OrderItemDTO;
 import com.yoananaydenova.ordersapp.repository.ItemRepository;
 import com.yoananaydenova.ordersapp.service.ItemService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 
 @Service
 public class ItemServiceImpl implements ItemService {
@@ -44,5 +42,17 @@ public class ItemServiceImpl implements ItemService {
         item.setCurrentPrice(newItem.currentPrice());
 
         return itemRepository.save(item);
+    }
+
+    @Override
+    public String deleteItemById(Long id) {
+        if (!itemRepository.existsById(id)){
+            throw new ItemNotFoundException(id);
+        }
+
+        itemRepository.deleteById(id);
+
+        return """
+               Item with id %s has been successfully deleted!""".formatted(id);
     }
 }

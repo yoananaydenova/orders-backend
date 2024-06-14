@@ -2,6 +2,8 @@ package com.yoananaydenova.ordersapp.model;
 
 import jakarta.persistence.*;
 
+import java.util.Set;
+
 @Entity
 @Table(name = "items")
 public class Item {
@@ -58,4 +60,5 @@ public class Item {
     public void setCurrentPrice(double currentPrice) {
         this.currentPrice = currentPrice;
     }
+
 }

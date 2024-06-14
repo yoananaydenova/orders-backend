@@ -15,4 +15,6 @@ public interface ItemService {
     Item findById(Long id);
 
     Item updateItemById(Long id, AddItemDTO addItemDTO);
+
+    String deleteItemById(Long id);
 }

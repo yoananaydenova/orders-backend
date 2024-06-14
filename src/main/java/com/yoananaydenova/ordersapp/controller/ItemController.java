@@ -38,4 +38,10 @@ public class ItemController {
     public Item updateItem(@PathVariable Long id, @RequestBody AddItemDTO addItemDTO){
        return itemService.updateItemById(id, addItemDTO);
     }
+
+    @DeleteMapping("/item/{id}")
+    public String deleteItem(@PathVariable Long id){
+        return itemService.deleteItemById(id);
+    }
+
 }
