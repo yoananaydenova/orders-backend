@@ -1,6 +1,5 @@
 package com.yoananaydenova.ordersapp.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
@@ -22,7 +21,7 @@ public class Order {
     @Column
     private BigDecimal totalAmount;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "order")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "order",cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<OrderItem> items;
 
     public Order() {

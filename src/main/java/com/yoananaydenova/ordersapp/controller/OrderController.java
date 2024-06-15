@@ -1,6 +1,5 @@
 package com.yoananaydenova.ordersapp.controller;
 
-import com.yoananaydenova.ordersapp.model.Order;
 import com.yoananaydenova.ordersapp.model.dtos.AddOrderDTO;
 import com.yoananaydenova.ordersapp.model.dtos.OrderDTO;
 import com.yoananaydenova.ordersapp.service.OrderService;
@@ -31,4 +30,20 @@ public class OrderController {
     public List<OrderDTO> getAllOrders(){
         return orderService.getAllOrders();
     }
+
+    @GetMapping("/order/{id}")
+    public OrderDTO getSingleOrderById(@PathVariable Long id){
+        return orderService.findById(id);
+    }
+
+    @PutMapping("/order/{id}")
+    public OrderDTO updateOrder(@PathVariable Long id, @RequestBody AddOrderDTO addOrderDTO){
+        return orderService.updateOrderById(id, addOrderDTO);
+    }
+
+    @DeleteMapping("/order/{id}")
+    public String deleteOrder(@PathVariable Long id){
+        return orderService.deleteOrderById(id);
+    }
+
 }

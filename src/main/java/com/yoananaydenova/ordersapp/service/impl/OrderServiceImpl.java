@@ -1,5 +1,6 @@
 package com.yoananaydenova.ordersapp.service.impl;
 
+import com.yoananaydenova.ordersapp.exception.ItemNotFoundException;
 import com.yoananaydenova.ordersapp.model.Item;
 import com.yoananaydenova.ordersapp.model.Order;
 import com.yoananaydenova.ordersapp.model.OrderItem;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -68,18 +70,64 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public List<OrderDTO> getAllOrders() {
         return orderRepository.findAll().stream()
-                .map(order-> new OrderDTO(order.getOrderId(),
-                        order.getCreatedOn(), order.getUpdatedOn(), order.getTotalAmount(), createOrderItemDTOs(order.getItems()), new ArrayList<>())).collect(Collectors.toList());
+                .map(this::createOrderDTO).collect(Collectors.toList());
+    }
+
+    @Override
+    public OrderDTO findById(Long id) {
+        return createOrderDTO(findOrderById(id));
+    }
+
+    public Order findOrderById(Long id) {
+        return orderRepository.findById(id).orElseThrow(() -> new OrderNotFoundException(id));
+    }
+
+    // TODO
+    @Override
+    public OrderDTO updateOrderById(Long id, AddOrderDTO addOrderDTO) {
+        final Order order = findOrderById(id);
+
+        return null;
+    }
+
+
+    @Override
+    public String deleteOrderById(Long id) {
+
+       final Order order = findOrderById(id);
+
+       final List<String> itemDeletionResult = order.getItems().stream().map(this::deleteOrderItem).toList();
+
+        orderRepository.deleteById(id);
+
+        return """
+               Order with id %s has been successfully deleted!""".formatted(id);
+    }
+
+    private String deleteOrderItem(OrderItem orderItem){
+
+      final  Long itemId = orderItem.getItemId();
+        final Item item;
+        try {
+             item = itemService.findById(itemId);
+        }catch (ItemNotFoundException ex){
+           return """
+               Item with id %s was deleted from the database!""".formatted(itemId);
+        }
+
+        item.setAvailableQuantity(item.getAvailableQuantity() + orderItem.getQuantity());
+
+        return """
+               Item with id %s was successfully deleted from the order!""".formatted(itemId);
     }
 
     private List<OrderItemDTO> createOrderItemDTOs(Set<OrderItem> orderItems) {
-        return orderItems.stream().map(i-> new OrderItemDTO(i.getId(),i.getItemName(), i.getQuantity())).collect(Collectors.toList());
+        return orderItems.stream().map(i-> new OrderItemDTO(i.getItemId(),i.getItemName(), i.getQuantity())).collect(Collectors.toList());
     }
 
-
-    private Order getOrder(long orderId) {
-        return orderRepository.findById(orderId)
-                .orElseThrow(() -> new OrderNotFoundException(orderId) );
+    private OrderDTO createOrderDTO(Order order){
+        return new OrderDTO(order.getOrderId(),
+                order.getCreatedOn(), order.getUpdatedOn(), order.getTotalAmount(), createOrderItemDTOs(order.getItems()));
     }
 
     @Transactional
@@ -91,13 +139,9 @@ public class OrderServiceImpl implements OrderService {
 
         validateQuantity(orderItemDTO.itemName(), availableQuantity, orderItemQuantity);
 
-        item.setAvailableQuantity(calculateAvailableQuantity(availableQuantity, orderItemQuantity));
+        item.setAvailableQuantity(availableQuantity - orderItemQuantity);
 
         return new OrderItem(item.getItemId(), item.getCurrentPrice(), orderItemQuantity,item.getName(),  order);
-    }
-
-    private static int calculateAvailableQuantity(int availableQuantity, int orderItemQuantity) {
-        return availableQuantity - orderItemQuantity;
     }
 
     private static void validateQuantity(String itemName, int availableQuantity, int orderItemQuantity) {

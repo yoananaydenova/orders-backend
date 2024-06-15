@@ -12,4 +12,10 @@ public interface OrderService {
     OrderDTO createOrder(AddOrderDTO addOrderDTO);
 
     List<OrderDTO> getAllOrders();
+
+    OrderDTO findById(Long id);
+
+    OrderDTO updateOrderById(Long id, AddOrderDTO addItemDTO);
+
+    String deleteOrderById(Long id);
 }
