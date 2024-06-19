@@ -63,7 +63,7 @@ public class OrderServiceImpl implements OrderService {
 
     private static List<OrderItemDTO> convertOrderItemIntoDTO(List<OrderItem> savedOrderItems) {
         return savedOrderItems.stream()
-                .map(i -> new OrderItemDTO(i.getItemId(), i.getItemName(), i.getQuantity()))
+                .map(i -> new OrderItemDTO(i.getItemId(), i.getItemName(), i.getPrice(), i.getQuantity()))
                 .collect(Collectors.toList());
     }
 
@@ -82,14 +82,40 @@ public class OrderServiceImpl implements OrderService {
         return orderRepository.findById(id).orElseThrow(() -> new OrderNotFoundException(id));
     }
 
-    // TODO
+    // TODO here
     @Override
     public OrderDTO updateOrderById(Long id, AddOrderDTO addOrderDTO) {
         final Order order = findOrderById(id);
+        order.setUpdatedOn(LocalDateTime.now());
 
+
+        List<Long> oldOrderItemIds =  order.getItems().stream().map(OrderItem::getItemId).toList();
+        List<Long> newOrderItemIds = addOrderDTO.items().stream().map(OrderItemDTO::itemId).toList();
+
+//        List<String> list = new ArrayList<>(CollectionUtils.disjunction(oldOrderItemIds, newOrderItemIds));
+
+
+        addOrderDTO.items().forEach(item->{
+            if(oldOrderItemIds.contains(item.itemId())){
+                updateItemList(item);
+            }else{
+
+            }
+        });
         return null;
     }
 
+    private void updateItemList(OrderItemDTO orderItem) {
+
+        final Item item;
+        try {
+            item =  itemService.findById(orderItem.itemId());
+        }catch (ItemNotFoundException ex){
+
+        }
+//        if(orderItem.quantity() )
+
+    }
 
     @Override
     public String deleteOrderById(Long id) {
@@ -122,7 +148,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     private List<OrderItemDTO> createOrderItemDTOs(Set<OrderItem> orderItems) {
-        return orderItems.stream().map(i-> new OrderItemDTO(i.getItemId(),i.getItemName(), i.getQuantity())).collect(Collectors.toList());
+        return orderItems.stream().map(i-> new OrderItemDTO(i.getItemId(),i.getItemName(),i.getPrice(), i.getQuantity())).collect(Collectors.toList());
     }
 
     private OrderDTO createOrderDTO(Order order){
