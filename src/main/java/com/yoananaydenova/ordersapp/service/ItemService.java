@@ -2,19 +2,22 @@ package com.yoananaydenova.ordersapp.service;
 
 import com.yoananaydenova.ordersapp.model.Item;
 import com.yoananaydenova.ordersapp.model.dtos.AddItemDTO;
-import com.yoananaydenova.ordersapp.model.dtos.OrderItemDTO;
+import com.yoananaydenova.ordersapp.model.dtos.ItemDTO;
+
 
 import java.util.List;
 
 public interface ItemService {
 
-    Item createItem(AddItemDTO addItemDTO);
+    ItemDTO createItem(AddItemDTO addItemDTO);
 
-    List<Item> getAllItems();
+    List<ItemDTO> getAllItems();
 
     Item findById(Long id);
 
-    Item updateItemById(Long id, AddItemDTO addItemDTO);
+    ItemDTO findItemDTOById(Long id);
+
+    ItemDTO updateItemById(Long id, AddItemDTO addItemDTO);
 
     String deleteItemById(Long id);
 }

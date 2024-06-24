@@ -2,6 +2,7 @@ package com.yoananaydenova.ordersapp.controller;
 
 import com.yoananaydenova.ordersapp.model.Item;
 import com.yoananaydenova.ordersapp.model.dtos.AddItemDTO;
+import com.yoananaydenova.ordersapp.model.dtos.ItemDTO;
 import com.yoananaydenova.ordersapp.service.ItemService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -20,22 +21,22 @@ public class ItemController {
     }
 
     @PostMapping("/item")
-    public Item createItem(@RequestBody AddItemDTO addItemDTO){
+    public ItemDTO createItem(@RequestBody AddItemDTO addItemDTO){
         return itemService.createItem(addItemDTO);
     }
 
     @GetMapping("/items")
-    public List<Item> getAllItems(){
+    public List<ItemDTO> getAllItems(){
         return itemService.getAllItems();
     }
 
     @GetMapping("/item/{id}")
-    public Item getSingleItemById(@PathVariable Long id){
-       return itemService.findById(id);
+    public ItemDTO getSingleItemById(@PathVariable Long id){
+       return itemService.findItemDTOById(id);
     }
 
     @PutMapping("/item/{id}")
-    public Item updateItem(@PathVariable Long id, @RequestBody AddItemDTO addItemDTO){
+    public ItemDTO updateItem(@PathVariable Long id, @RequestBody AddItemDTO addItemDTO){
        return itemService.updateItemById(id, addItemDTO);
     }
 
