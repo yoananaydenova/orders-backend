@@ -56,12 +56,12 @@ public class OrderServiceImpl implements OrderService {
 
         orderRepository.save(newOrder);
 
-        final List<OrderItemDTO> resultItems = convertOrderItemIntoDTO(savedOrderItems);
+        final List<OrderItemDTO> resultItems = convertOrderItemIntoDTOs(savedOrderItems);
 
         return new OrderDTO(newOrder.getOrderId(), newOrder.getCreatedOn(), null, newOrder.getTotalAmount(), resultItems, filedAddedItems);
     }
 
-    private static List<OrderItemDTO> convertOrderItemIntoDTO(List<OrderItem> savedOrderItems) {
+    private static List<OrderItemDTO> convertOrderItemIntoDTOs(List<OrderItem> savedOrderItems) {
         return savedOrderItems.stream()
                 .map(i -> new OrderItemDTO(i.getItemId(), i.getItemName(), i.getPrice(), i.getQuantity()))
                 .collect(Collectors.toList());

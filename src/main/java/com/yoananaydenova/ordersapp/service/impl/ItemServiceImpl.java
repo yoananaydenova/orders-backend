@@ -23,7 +23,7 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public ItemDTO createItem(AddItemDTO addItemDTO) {
 
-        final Item item = itemRepository.save(new Item(addItemDTO.name(), addItemDTO.availableQuantity(), addItemDTO.currentPrice()));
+        final Item item = itemRepository.save(new Item(addItemDTO.name(), addItemDTO.quantity(), addItemDTO.price()));
         return convertItemIntoDTO(item);
     }
 
@@ -50,8 +50,8 @@ public class ItemServiceImpl implements ItemService {
        final Item item = findById(id);
 
         item.setName(newItem.name());
-        item.setAvailableQuantity(newItem.availableQuantity());
-        item.setCurrentPrice(newItem.currentPrice());
+        item.setAvailableQuantity(newItem.quantity());
+        item.setCurrentPrice(newItem.price());
 
         return convertItemIntoDTO(itemRepository.save(item));
     }
