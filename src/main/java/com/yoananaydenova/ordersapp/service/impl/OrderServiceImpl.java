@@ -90,13 +90,13 @@ public class OrderServiceImpl implements OrderService {
 
 
         List<Long> oldOrderItemIds =  order.getItems().stream().map(OrderItem::getItemId).toList();
-        List<Long> newOrderItemIds = addOrderDTO.items().stream().map(OrderItemDTO::itemId).toList();
+        List<Long> newOrderItemIds = addOrderDTO.items().stream().map(OrderItemDTO::id).toList();
 
 //        List<String> list = new ArrayList<>(CollectionUtils.disjunction(oldOrderItemIds, newOrderItemIds));
 
 
         addOrderDTO.items().forEach(item->{
-            if(oldOrderItemIds.contains(item.itemId())){
+            if(oldOrderItemIds.contains(item.id())){
                 updateItemList(item);
             }else{
 
@@ -109,7 +109,7 @@ public class OrderServiceImpl implements OrderService {
 
         final Item item;
         try {
-            item =  itemService.findById(orderItem.itemId());
+            item =  itemService.findById(orderItem.id());
         }catch (ItemNotFoundException ex){
 
         }
@@ -158,12 +158,12 @@ public class OrderServiceImpl implements OrderService {
 
     @Transactional
     private OrderItem createOrderItem(Order order, OrderItemDTO orderItemDTO) {
-        final Item item = itemService.findById(orderItemDTO.itemId());
+        final Item item = itemService.findById(orderItemDTO.id());
 
         final int availableQuantity = item.getAvailableQuantity();
         final int orderItemQuantity = orderItemDTO.quantity();
 
-        validateQuantity(orderItemDTO.itemName(), availableQuantity, orderItemQuantity);
+        validateQuantity(orderItemDTO.name(), availableQuantity, orderItemQuantity);
 
         item.setAvailableQuantity(availableQuantity - orderItemQuantity);
 
