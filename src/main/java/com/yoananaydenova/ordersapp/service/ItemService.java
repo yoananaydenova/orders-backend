@@ -20,4 +20,6 @@ public interface ItemService {
     ItemDTO updateItemById(Long id, AddItemDTO addItemDTO);
 
     String deleteItemById(Long id);
+
+    List<ItemDTO> getAllItemsById(List<Long> listId);
 }

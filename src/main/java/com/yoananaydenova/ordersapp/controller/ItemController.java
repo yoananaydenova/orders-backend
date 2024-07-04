@@ -1,6 +1,5 @@
 package com.yoananaydenova.ordersapp.controller;
 
-import com.yoananaydenova.ordersapp.model.Item;
 import com.yoananaydenova.ordersapp.model.dtos.AddItemDTO;
 import com.yoananaydenova.ordersapp.model.dtos.ItemDTO;
 import com.yoananaydenova.ordersapp.service.ItemService;
@@ -28,6 +27,11 @@ public class ItemController {
     @GetMapping("/items")
     public List<ItemDTO> getAllItems(){
         return itemService.getAllItems();
+    }
+
+    @GetMapping("/info-items")
+    public List<ItemDTO> getAllItemsById(@RequestParam List<Long> ids){
+        return itemService.getAllItemsById(ids);
     }
 
     @GetMapping("/item/{id}")
