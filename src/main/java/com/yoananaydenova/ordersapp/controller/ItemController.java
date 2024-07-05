@@ -29,11 +29,6 @@ public class ItemController {
         return itemService.getAllItems();
     }
 
-    @GetMapping("/info-items")
-    public List<ItemDTO> getAllItemsById(@RequestParam List<Long> ids){
-        return itemService.getAllItemsById(ids);
-    }
-
     @GetMapping("/item/{id}")
     public ItemDTO getSingleItemById(@PathVariable Long id){
        return itemService.findItemDTOById(id);

@@ -21,5 +21,4 @@ public interface ItemService {
 
     String deleteItemById(Long id);
 
-    List<ItemDTO> getAllItemsById(List<Long> listId);
 }

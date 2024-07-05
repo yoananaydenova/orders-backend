@@ -68,8 +68,4 @@ public class ItemServiceImpl implements ItemService {
                Item with id %s has been successfully deleted!""".formatted(id);
     }
 
-    @Override
-    public List<ItemDTO> getAllItemsById(List<Long> listId) {
-        return itemRepository.findAllById(listId).stream().map(this::convertItemIntoDTO).toList();
-    }
 }
