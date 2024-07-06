@@ -1,21 +1,20 @@
 package com.yoananaydenova.ordersapp.service.impl;
 
 import com.yoananaydenova.ordersapp.exception.ItemNotFoundException;
+import com.yoananaydenova.ordersapp.exception.ItemQuantityException;
+import com.yoananaydenova.ordersapp.exception.OrderNotFoundException;
 import com.yoananaydenova.ordersapp.model.Item;
 import com.yoananaydenova.ordersapp.model.Order;
 import com.yoananaydenova.ordersapp.model.OrderItem;
 import com.yoananaydenova.ordersapp.model.dtos.AddOrderDTO;
 import com.yoananaydenova.ordersapp.model.dtos.OrderDTO;
 import com.yoananaydenova.ordersapp.model.dtos.OrderItemDTO;
-import com.yoananaydenova.ordersapp.repository.OrderRepository;
 import com.yoananaydenova.ordersapp.repository.OrderItemRepository;
+import com.yoananaydenova.ordersapp.repository.OrderRepository;
 import com.yoananaydenova.ordersapp.service.ItemService;
 import com.yoananaydenova.ordersapp.service.OrderService;
-import com.yoananaydenova.ordersapp.exception.ItemQuantityException;
-import com.yoananaydenova.ordersapp.exception.OrderNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -82,76 +81,73 @@ public class OrderServiceImpl implements OrderService {
         return orderRepository.findById(id).orElseThrow(() -> new OrderNotFoundException(id));
     }
 
-    // TODO here
     @Override
     public OrderDTO updateOrderById(Long id, AddOrderDTO addOrderDTO) {
         final Order order = findOrderById(id);
         order.setUpdatedOn(LocalDateTime.now());
 
 
-        List<Long> oldOrderItemIds =  order.getItems().stream().map(OrderItem::getItemId).toList();
-        List<Long> newOrderItemIds = addOrderDTO.items().stream().map(OrderItemDTO::id).toList();
+        final Set<OrderItemDTO> newItems = addOrderDTO.items();
 
-//        List<String> list = new ArrayList<>(CollectionUtils.disjunction(oldOrderItemIds, newOrderItemIds));
+        order.getItems().forEach(item -> {
+            final int newQuantity = newItems.stream()
+                    .filter(i -> i.id() == item.getItemId())
+                    .map(OrderItemDTO::quantity).findFirst().orElseThrow();
 
+            final Item currentItem = itemService.findById(item.getItemId());
+            final int totalQuantity = currentItem.getAvailableQuantity()+item.getQuantity();
+            currentItem.setAvailableQuantity(totalQuantity-newQuantity);
 
-        addOrderDTO.items().forEach(item->{
-            if(oldOrderItemIds.contains(item.id())){
-                updateItemList(item);
-            }else{
-
-            }
+            item.setQuantity(newQuantity);
         });
-        return null;
+
+        order. calculateTotalAmount();
+
+        orderRepository.save(order);
+
+        final List<OrderItemDTO> resultItems = convertOrderItemIntoDTOs(new ArrayList<>(order.getItems()));
+
+        return new OrderDTO(order.getOrderId(),
+                order.getCreatedOn(), order.getUpdatedOn(), order.getTotalAmount(),
+                resultItems);
     }
 
-    private void updateItemList(OrderItemDTO orderItem) {
-
-        final Item item;
-        try {
-            item =  itemService.findById(orderItem.id());
-        }catch (ItemNotFoundException ex){
-
-        }
-//        if(orderItem.quantity() )
-
-    }
 
     @Override
     public String deleteOrderById(Long id) {
 
-       final Order order = findOrderById(id);
+        final Order order = findOrderById(id);
 
-       final List<String> itemDeletionResult = order.getItems().stream().map(this::deleteOrderItem).toList();
+        final List<String> itemDeletionResult = order.getItems().stream().map(this::deleteOrderItem).toList();
 
         orderRepository.deleteById(id);
 
         return """
-               Order with id %s has been successfully deleted!""".formatted(id);
+                Order with id %s has been successfully deleted!""".formatted(id);
     }
 
-    private String deleteOrderItem(OrderItem orderItem){
+    private String deleteOrderItem(OrderItem orderItem) {
 
-      final  Long itemId = orderItem.getItemId();
+        final Long itemId = orderItem.getItemId();
         final Item item;
         try {
-             item = itemService.findById(itemId);
-        }catch (ItemNotFoundException ex){
-           return """
-               Item with id %s was deleted from the database!""".formatted(itemId);
+            item = itemService.findById(itemId);
+        } catch (ItemNotFoundException ex) {
+            return """
+                    Item with id %s was deleted from the database!""".formatted(itemId);
         }
 
         item.setAvailableQuantity(item.getAvailableQuantity() + orderItem.getQuantity());
 
         return """
-               Item with id %s was successfully deleted from the order!""".formatted(itemId);
+                Item with id %s was successfully deleted from the order!""".formatted(itemId);
     }
 
     private List<OrderItemDTO> createOrderItemDTOs(Set<OrderItem> orderItems) {
-        return orderItems.stream().map(i-> new OrderItemDTO(i.getItemId(),i.getItemName(),i.getPrice(), i.getQuantity())).collect(Collectors.toList());
+        return orderItems.stream().map(i -> new OrderItemDTO(i.getItemId(), i.getItemName(), i.getPrice(), i.getQuantity())).collect(Collectors.toList());
     }
 
-    private OrderDTO createOrderDTO(Order order){
+    private OrderDTO createOrderDTO(Order order) {
         return new OrderDTO(order.getOrderId(),
                 order.getCreatedOn(), order.getUpdatedOn(), order.getTotalAmount(), createOrderItemDTOs(order.getItems()));
     }
@@ -167,7 +163,7 @@ public class OrderServiceImpl implements OrderService {
 
         item.setAvailableQuantity(availableQuantity - orderItemQuantity);
 
-        return new OrderItem(item.getItemId(), item.getCurrentPrice(), orderItemQuantity,item.getName(),  order);
+        return new OrderItem(item.getItemId(), item.getCurrentPrice(), orderItemQuantity, item.getName(), order);
     }
 
     private static void validateQuantity(String itemName, int availableQuantity, int orderItemQuantity) {

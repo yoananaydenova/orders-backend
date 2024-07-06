@@ -69,6 +69,9 @@ public class Order {
         this.totalAmount = calculateTotalAmount(items);
     }
 
+    public void calculateTotalAmount(){
+        this.totalAmount = calculateTotalAmount(this.items);
+    }
     private static BigDecimal calculateTotalAmount(Set<OrderItem> items) {
         return items.stream()
                 .map(Order::calcItemAmount)
