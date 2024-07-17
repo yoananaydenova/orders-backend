@@ -21,4 +21,5 @@ public interface ItemService {
 
     String deleteItemById(Long id);
 
+    List<ItemDTO> getAvailableItems();
 }

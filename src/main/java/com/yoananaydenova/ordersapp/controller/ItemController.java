@@ -24,9 +24,14 @@ public class ItemController {
         return itemService.createItem(addItemDTO);
     }
 
-    @GetMapping("/items")
+    @GetMapping("/all-items")
     public List<ItemDTO> getAllItems(){
         return itemService.getAllItems();
+    }
+
+    @GetMapping("/available-items")
+    public List<ItemDTO> getAvailableItems(){
+        return itemService.getAvailableItems();
     }
 
     @GetMapping("/item/{id}")

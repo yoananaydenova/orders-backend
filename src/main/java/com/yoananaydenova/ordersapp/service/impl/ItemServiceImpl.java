@@ -68,4 +68,9 @@ public class ItemServiceImpl implements ItemService {
                Item with id %s has been successfully deleted!""".formatted(id);
     }
 
+    @Override
+    public List<ItemDTO> getAvailableItems() {
+        return itemRepository.findAllByAvailableQuantityGreaterThan(0).stream().map(this::convertItemIntoDTO).collect(Collectors.toList());
+    }
+
 }
