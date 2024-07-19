@@ -73,6 +73,9 @@ public class Order {
         this.totalAmount = calculateTotalAmount(this.items);
     }
     private static BigDecimal calculateTotalAmount(Set<OrderItem> items) {
+        if(items.isEmpty()){
+            return BigDecimal.ZERO;
+        }
         return items.stream()
                 .map(Order::calcItemAmount)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);

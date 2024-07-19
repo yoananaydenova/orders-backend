@@ -86,30 +86,34 @@ public class OrderServiceImpl implements OrderService {
         final Order order = findOrderById(id);
         order.setUpdatedOn(LocalDateTime.now());
 
+        syncItems(addOrderDTO, order);
 
-        final Set<OrderItemDTO> newItems = addOrderDTO.items();
-
-        order.getItems().forEach(item -> {
-            final int newQuantity = newItems.stream()
-                    .filter(i -> i.id() == item.getItemId())
-                    .map(OrderItemDTO::quantity).findFirst().orElseThrow();
-
-            final Item currentItem = itemService.findById(item.getItemId());
-            final int totalQuantity = currentItem.getAvailableQuantity()+item.getQuantity();
-            currentItem.setAvailableQuantity(totalQuantity-newQuantity);
-
-            item.setQuantity(newQuantity);
-        });
-
-        order. calculateTotalAmount();
-
-        orderRepository.save(order);
+        order.calculateTotalAmount();
 
         final List<OrderItemDTO> resultItems = convertOrderItemIntoDTOs(new ArrayList<>(order.getItems()));
 
         return new OrderDTO(order.getOrderId(),
                 order.getCreatedOn(), order.getUpdatedOn(), order.getTotalAmount(),
                 resultItems);
+    }
+
+    private void syncItems(AddOrderDTO addOrderDTO, Order order) {
+        if (addOrderDTO.items().isEmpty()) {
+            order.setItems(new HashSet<>());
+        } else {
+
+            order.getItems().forEach(item -> {
+                final int newQuantity = addOrderDTO.items().stream()
+                        .filter(i -> i.id() == item.getItemId())
+                        .map(OrderItemDTO::quantity).findFirst().orElseThrow();
+
+                final Item currentItem = itemService.findById(item.getItemId());
+                final int totalQuantity = currentItem.getAvailableQuantity() + item.getQuantity();
+                currentItem.setAvailableQuantity(totalQuantity - newQuantity);
+
+                item.setQuantity(newQuantity);
+            });
+        }
     }
 
 
