@@ -90,6 +90,8 @@ public class OrderServiceImpl implements OrderService {
 
         order.calculateTotalAmount();
 
+        orderRepository.save(order);
+
         final List<OrderItemDTO> resultItems = convertOrderItemIntoDTOs(new ArrayList<>(order.getItems()));
 
         return new OrderDTO(order.getOrderId(),
