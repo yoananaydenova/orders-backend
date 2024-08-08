@@ -6,6 +6,8 @@ import com.yoananaydenova.ordersapp.model.dtos.AddItemDTO;
 import com.yoananaydenova.ordersapp.model.dtos.ItemDTO;
 import com.yoananaydenova.ordersapp.repository.ItemRepository;
 import com.yoananaydenova.ordersapp.service.ItemService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -32,8 +34,9 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public List<ItemDTO> getAllItems() {
-        return itemRepository.findAll().stream().map(this::convertItemIntoDTO).collect(Collectors.toList());
+    public Page<ItemDTO> findAllItemsInPage(PageRequest pageRequest) {
+        return itemRepository.findAll(
+                pageRequest).map(this::convertItemIntoDTO);
     }
 
     @Override
