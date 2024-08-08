@@ -16,8 +16,7 @@ public class DataLoader implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        // Load initial data into the database
-        itemRepository.save(new Item("Hammer", 10, 10.50));
-        itemRepository.save(new Item("Pliers", 12, 22.60));
+        itemRepository.save(new Item("Item_1", 1, 1.0));
+        itemRepository.save(new Item("Item_2", 2, 2.0));
     }
 }
