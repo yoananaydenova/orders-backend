@@ -62,13 +62,13 @@ public class ItemController {
     }
 
     @PutMapping("/item/{id}")
-    public ItemDTO updateItem(@PathVariable Long id, @RequestBody AddItemDTO addItemDTO){
-       return itemService.updateItemById(id, addItemDTO);
+    public ResponseEntity<ItemDTO> updateItem(@PathVariable Long id, @RequestBody AddItemDTO addItemDTO){
+        return ResponseEntity.ok(itemService.updateItemById(id, addItemDTO));
     }
 
     @DeleteMapping("/item/{id}")
-    public String deleteItem(@PathVariable Long id){
-        return itemService.deleteItemById(id);
+    public ResponseEntity<String> deleteItem(@PathVariable Long id){
+        return ResponseEntity.ok(itemService.deleteItemById(id));
     }
 
 }
