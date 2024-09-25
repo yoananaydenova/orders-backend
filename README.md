@@ -71,6 +71,26 @@ PUT /item/{id}
 DELETE /item/{id}
 ```
 
+```bash
+POST /order
+```
+
+```bash
+GET /orders
+```
+
+```bash
+GET /order/{id}
+```
+
+```bash
+PUT /order/{id}
+```
+
+```bash
+DELETE /order/{id}
+```
+
 You can test them using postman, Swagger or any other rest client.
 
 Once the application is running, you can access the Swagger UI at <http://localhost:8080/swagger-ui/index.html>.  
